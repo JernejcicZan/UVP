@@ -75,6 +75,9 @@ def vprasanje_in_odgovori(self, okno):
     B.grid(row=1, column=1)
     C.grid(row=1, column=2)
 
+
+
+
     
 
 
