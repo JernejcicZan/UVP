@@ -1,116 +1,87 @@
 
-from tkinter import *
 import random
-
-with open('vprašanja.txt' , 'w') as dat:
-    print('Na prvem svetovnem prvenstvu leta 1930 so vse tekme potekale v:;Montevideu;Sao Paolu;Beogradu \n'
-          'Največ zadetkov na enem prvenstvu, kar 13 je zadel:;Just Fontaine(Francija);Pele(Brazilija);Gerd Müller(Nemčija)\n'
-          'Najhitrejši zadetek je leta 2002 zadel Hakan Sükur, zanj je potreboval:;11 sekund;32 sekund;5 sekund\n'
-          'Katera reprezentanca je nazadnje kot gostitelj osvojila prvenstvo?;Francija;Argentina;Nemčija\n'
-          'Katera reprezentanca je že trikrat igrala v finalu in še ni postala svetovni prvak?;Nizozemska;Madžarska;Portugalska\n'
-          'Na prvenstvu leta 1986 je v četrtfinalu Diego Maradona zadel enega od svojih 2 zadetkov z roko znan je kot božja roka. Proti komu?;Anglija;Brazilija;Čile\n'
-          'Največ zadetkov na vseh prvenstvih skupaj (16) je zadel:;Miroslav Klose;Pele;Just Fontaine\n'
-          'Na poti do naslova svetovnega prvaka leta 2006 je Italija tako v kvalifikacijah kot na prvenstu izgubala zgolj proti:;Sloveniji;ZDA;Norveški\n'
-          'Kdo je edini, nogometaš, ki je v finalu svetovnega prvenstva zadel trikrat?;Geoff Hurst;Diego Maradona;Ronaldo\n'
-          'Samo dvem ekipam je uspelo obraniti naslov svetovnega prvaka, to sta:;Italija in Brazilija;Nemčija in Francija;Brazilija in Nemčija\n'
-          'Na svetovnem prvenstvu se še nikoli ni zgodilo, da bi:;Zmagovalce vodil tuj selektor;Domačin izpadel po skupinskem delu;Finale igrali dve neevropski ekipi\n'
-          'Zadnja trije prvaki (Španija, Italija, Nemčija) so na prvenstvu, kjer so branili naslov:;Izpadli po skupinskem delu;Izpadli v četrtfinalu;Izgubili proti kasnejšemu prvaku\n'
-          'Na SP v Rusiji sta prvič nastopili:;Islandija in Panama;Tunizija in Peru;Islandija in Egipt\n'
-          'Za edino slovensko zmago na svetovnih prvenstvih (1:0 nad Alžirijo) je edini gol zadel:;Robert Koren;Milivoje Novakovič;Zlatko Zahovič\n'
-          'Kolikokrat se je zgodilo, da finalna tekma ni bila odigrana v glavnem mestu države gostiteljice?;5;2;3\n'
-          , file=dat)
-
+from random import shuffle
 
 
 class Kviz:
-    def __init__(self, okno):
-        self.navodila = Label(okno, text='Pozdravljeni v kvizu o zgodovini svetovnih'
-               ' prvenstev v nogometu. Kviz rešujete tako, da pri vsakem vprašanju '
-               'izberete enega od treh odgovorov.')
-        self.navodila.grid(row=0, column=0, columnspan=3)
-
-        self.zacetek = Button(okno, text='Začni kviz', command=zacnimo)
-
-        self.odgovor = Label(okno, text='')
-        
+    def __init__(self):
+        self.ime = input('Vaše ime: ')
+        self.pozdrav = print('Pozdravljeni, ' + self.ime )
+        self.navodila = print('Najprej boste izbrali temo za kviz izbirate lahko med nogometom, košarko in slovenskim športom.'
+                              'Kviz rešujete tako, da pri vsakem vprašanju izberete enega od treh odgovorov (a, b ali c).')
+        self.izbor = None
         self.pravilnih = 0
 
-        
-def preberi_vprasanja():
-    with open('vprašanja.txt', 'r') as dat:
-        prebrano = []
-        for vrstica in dat:
-            nabor = vrstica.strip().split(';')
-            nabor = tuple(nabor)
-            prebrano.append(nabor)
-    print(prebrano)
-        
+#Nabor vprašanj in odgovorv iz vsake teme bomo predstavili s seznamom slovarjev
+
+Nogomet = [
+        {vprasanje : 'Proti kateri reprezentanci je Diego Maradona dosegel gol z roko ("Božja roka")? ',
+         'a': 'Nemčija', 'b' : 'Anglija',  'c' : 'Brazilija', odgovor : 'b'},
+        {vprasanje : 'Kateri angleški klub je večkrat osvojil ligo prvakov kot pa domače prvenstvo? ',
+         'a' : 'Nottingham Forest', 'b' : 'Chelsea', 'c' :  'Aston Villa', odgovor : 'a'},
+        {vprasanje : 'Nogometaši Chieva Verona imajo zelo nenavaden vzdevek, in sicer:'
+         'a': 'Rumena podmornica', 'b' : 'Leteči oslički',  'c' :  'Karamele', odgovor : 'b'}
+        ]
+       
+Kosarka = [
+        {vprasanje : 'Največkrat (petkrat) so svetovni prvaki reprezentanci ZDA in: ',
+         'a' : 'Španija', 'b' : 'Sovjetska zveza', 'c' : 'Jugoslavija', odgovor : 'c'},
+        {vprasanje : 'Na olimpijskih igrah leta 1992 so ameriško reprezentanco poimenovali kar: ',
+         'a' : 'Fantasy team', 'b' : 'Dream team',  'c' :  'All star team', odgovor : 'b'},
+        {vprasanje : 'Kobe Bryant je bil na naboru za ligo NBA izbran šele kot: ',
+         'a' :  '13.', 'b' :  '4.',  'c' :  '20.', odgovor : 'a'}
+        ]
+
+Slo_sport = [
+        {vprasanje : 'Koliko medalj je Slovenija osvojila na olimpijskih igrah v Sočiju leta 2014? ',
+         'a' :  '8',  'b' : '6', 'c' : '3', odgovor : 'a'},
+        {vprasanje : 'Kateri od naštetih smučarskih skakalcev ni nikoli dobil ocene za slog 5-krat 20?',
+         'a' : 'Peter Prevc', 'b' : 'Jurij Tepeš', 'c' : 'Primož Peterka', odgovor : 'c'},
+        {vprasanje : 'Kljub temu da je bil Leon Štukelj izjemen gimnastik, pa je tudi dokončal študij: ',
+        'a' : 'Fizike', 'b' : 'Prava', 'c' : 'Medicine', odgovor : 'b'}
+        ]
+                   
+def tema(self):
+    self.izbor = input('Izberite temo, vnesite 1, 2 ali 3: \n 1)Nogomet \n 2) Košarka \n 3) Slovenski šport \n Tema: ')
+    if self.izbor == '1':
+        tema = Nogomet
+    elif self.izbor == '2':
+        tema = Kosarka
+    elif self.izbor == '3':
+        tema = Slo_sport
+    else:
+        input('Temo lahko izberete le tako, da vnesete 1, 2 ali 3: ')
+
+def preveri(tema, odg, k):
+    pravilen_odgovor = tema[k].get(odgovor)
+    if odg == pravilen_odgovor:
+        self.pravilnih += 1
+        print('odgovor je pravilen!')
+    else:
+        print('Odgovor ni pravilen, pravilen odgovor je {}.'.format(pravilen_odgovor) )
+
+def izvedi(sez):
+    k = 0 #Štejemo vprašanja
+    while k < 3:
+        print(sez[k].get[vprasanje])
+        print('a' + sez[k].get['a'])
+        print('b' + sez[k].get['b'])
+        print('c' + sez[k].get['c'])
+        odg = input('Odgovor je: ')
+        if odg not in 'abc':
+            odg = input('Odgovorite lahko le tako da vnesete a, b ali c, torej odgovor je: ')
+        preveri(tema, odg, k)
+        k += 1
+    print('Prišli ste do konca {}, pravilno ste odgovorili na {} vprašanj od treh'.format(self.ime, self.pravilnih))
+
+kviz = Kviz()
+tema(kviz)
 
 
-def izbira_vprasanj():
-    izbrana_vprasanja = []
-    while len(izbrana_vprasanja) < 5:
-        x = random.randint(0, 14)
-        if x not in izbrana_vprasanja:
-            izbrana_vprasanja.append(x)
-    print(izbrana_vprasanja)
-
-
-
-
-def vprasanje_in_odgovori(self, okno):
-    izbira_vprasanj()
-    #for x in izbrana_vprasanja:
-        #prebrano[x] = 
-        
-        
-    vprasanje = Label(okno, text='Na prvem svetovnem prvenstvu leta 1930 v Urugvaju'
-                      ' je prvak postata reprezentanca:')
-    A = Button(okno, text='Urugvaj', command=pravilno)
-    B = Button(okno, text='Brazilija', command=napacno)
-    C = Button(okno, text='Jugoslavija in srbija in še nekej', command=napacno)
-
-    vprasanje.grid(row=0, column=0, columnspan=3)
-    A.grid(row=1, column=0)
-    B.grid(row=1, column=1)
-    C.grid(row=1, column=2)
-
-
-
-
-    
-
-
-def pravilno():
-    kviz.odgovor = Label(okno, text='Pravilno')
-    kviz.odgovor.grid(row=2, column=0)
-    kviz.pravilnih += 1
-    Naslednje = Button(okno, text='Naslednje vprašanje')
-    Naslednje.grid(row=2, column=2)
-    
-
-
-def napacno():
-    kviz.odgovor  = Label(okno, text='Narobe')
-    kviz.odgovor.grid(row=2, column=0)
-    Naslednje = Button(okno, text='Naslednje vprašanje')
-    Naslednje.grid(row=2, column=2)
-
-
-def zacnimo():
-    kviz.navodila.destroy()
-    kviz.zacetek.destroy()
-    vprasanje_in_odgovori(kviz, okno)
 
     
  
-okno = Tk()
-kviz = Kviz(okno)
 
-
-kviz.zacetek.grid(row=1, column=0)
-
-okno.mainloop()
 
 
                
