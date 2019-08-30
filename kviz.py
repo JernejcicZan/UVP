@@ -78,6 +78,12 @@ def preveri(slovar, odg):
         
 def konec(self):
     print('Prišli ste do konca {}, pravilno ste odgovorili na {} vprašanj od treh.'.format(self.ime, self.pravilnih))
+    znova = input('Če bi želeli igrati še enkrat (morda izbrati drugo temo) vtipkaje OK, sicer ste zaključili: ')
+    if znova == 'OK':
+        tema(kviz)
+        konec(kviz)
+        
+
 
 kviz = Kviz()
 tema(kviz)
