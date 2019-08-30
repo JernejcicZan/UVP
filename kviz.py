@@ -1,7 +1,4 @@
 
-import random
-from random import shuffle
-
 
 class Kviz:
     def __init__(self):
