@@ -11,6 +11,7 @@ class Kviz:
 
 
 #Vprašanja za vsako temo zapišemo v datoteke
+        
 with open('Nogomet.txt', 'w') as d:
     d.write('Proti kateri reprezentanci je Diego Maradona dosegel gol z roko ("Božja roka")?; Nemčija; Anglija; Brazilija;b\n')
     d.write('Kateri angleški klub je večkrat osvojil ligo prvakov kot pa domače prvenstvo?; Nottingham Forest; Chelsea; Aston Villa;a\n')
@@ -27,8 +28,32 @@ with open('Slo_sport.txt', 'w') as d:
     d.write('Kljub temu da je bil Leon Štukelj izjemen gimnastik, pa je tudi dokončal študij:; Fizike; Prava; Medicine;b')
 
 
-def izvedi(datoteka, k=0):
+
+    def izberi_temo(self):
+        tema = input('Izberite temo, vnesite 1, 2 ali 3: \n 1) Nogomet \n 2) Košarka \n 3) Slovenski šport \n Tema: ')
+        while tema not in '123':
+            tema = input('Temo lahko izberete le tako, da vnesete 1, 2 ali 3: ')
+        if tema == '1':
+            self.izbor = 'Nogomet.txt'
+        elif tema == '2':
+            self.izbor = 'Kosarka.txt'
+        elif tema == '3':
+            self.izbor = 'Slo_sport.txt'
+
+
+
+    def konec(self):
+        print('Prišli ste do konca {}, pravilno ste odgovorili na {} vprašanj od treh.'.format(self.ime, self.pravilnih))
+        znova = input('Če bi želeli igrati še enkrat (morda izbrati drugo temo) vtipkaje OK, sicer ste zaključili: ')
+        if znova in ['OK', 'ok', 'Ok']:
+            izvedi()
+
+
+            
+def izvedi():
+    izberi_temo(kviz)
     seznam  = []
+    datoteka = kviz.izbor
     with open(datoteka, 'r') as f:
         for vrstica in f:
             seznam.append(vrstica.strip().split(';'))
@@ -44,18 +69,6 @@ def izvedi(datoteka, k=0):
     konec(kviz)
 
 
-def tema(self):
-    self.izbor = input('Izberite temo, vnesite 1, 2 ali 3: \n 1) Nogomet \n 2) Košarka \n 3) Slovenski šport \n Tema: ')
-    if self.izbor == '1':
-        izvedi('Nogomet.txt')
-    elif self.izbor == '2':
-         izvedi('Kosarka.txt')
-    elif self.izbor == '3':
-        izvedi('Slo_sport.txt')
-    else:
-        print('Temo lahko izberete le tako, da vnesete 1, 2 ali 3: ')
-        tema(self)
-
 
 def preveri(sez, odg):
     pravilen_odgovor = sez[4]
@@ -66,17 +79,10 @@ def preveri(sez, odg):
         print('Odgovor ni pravilen, pravilen odgovor je {}.'.format(pravilen_odgovor) )
 
         
-def konec(self):
-    print('Prišli ste do konca {}, pravilno ste odgovorili na {} vprašanj od treh.'.format(self.ime, self.pravilnih))
-    znova = input('Če bi želeli igrati še enkrat (morda izbrati drugo temo) vtipkaje OK, sicer ste zaključili: ')
-    if znova in ['OK', 'ok', 'Ok']:
-        tema(kviz)
-        konec(kviz)
-        
 
 
 kviz = Kviz()
-tema(kviz)
+izvedi()
 
 
 
