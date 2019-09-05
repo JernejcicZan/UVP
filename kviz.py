@@ -9,74 +9,67 @@ class Kviz:
         self.izbor = None
         self.pravilnih = 0
 
-#Nabor vprašanj in odgovorv iz vsake teme bomo predstavili s seznamom slovarjev
 
-Nogomet = [
-        {'vprasanje' : 'Proti kateri reprezentanci je Diego Maradona dosegel gol z roko ("Božja roka")? ',
-         'a': 'Nemčija', 'b' : 'Anglija',  'c' : 'Brazilija', 'odgovor' : 'b'},
-        {'vprasanje' : 'Kateri angleški klub je večkrat osvojil ligo prvakov kot pa domače prvenstvo? ',
-         'a' : 'Nottingham Forest', 'b' : 'Chelsea', 'c' :  'Aston Villa', 'odgovor' : 'a'},
-        {'vprasanje' : 'Nogometaši Chieva Verona imajo zelo nenavaden vzdevek, in sicer:',
-         'a': 'Rumena podmornica', 'b' : 'Leteči oslički',  'c' :  'Karamele', 'odgovor' : 'b'}
-        ]
-       
-Kosarka = [
-        {'vprasanje' : 'Največkrat (petkrat) so svetovni prvaki v košarki postali reprezentanci ZDA in: ',
-         'a' : 'Španija', 'b' : 'Sovjetska zveza', 'c' : 'Jugoslavija', 'odgovor' : 'c'},
-        {'vprasanje' : 'Na olimpijskih igrah leta 1992 so ameriško reprezentanco poimenovali kar: ',
-         'a' : 'Fantasy team', 'b' : 'Dream team',  'c' :  'All star team', 'odgovor' : 'b'},
-        {'vprasanje' : 'Kobe Bryant je bil na naboru za ligo NBA leta 1996 izbran kot: ',
-         'a' :  '13.', 'b' :  '4.',  'c' :  '20.', 'odgovor' : 'a'}
-        ]
+#Vprašanja za vsako temo zapišemo v datoteke
+with open('Nogomet.txt', 'w') as d:
+    d.write('Proti kateri reprezentanci je Diego Maradona dosegel gol z roko ("Božja roka")?; Nemčija; Anglija; Brazilija;b\n')
+    d.write('Kateri angleški klub je večkrat osvojil ligo prvakov kot pa domače prvenstvo?; Nottingham Forest; Chelsea; Aston Villa;a\n')
+    d.write('Nogometaši Chieva Verona imajo zelo nenavaden vzdevek, in sicer: ; Rumena podmornica; Leteči oslički; Karamele;b')
 
-Slo_sport = [
-        {'vprasanje' : 'Koliko medalj je Slovenija osvojila na olimpijskih igrah v Sočiju leta 2014? ',
-         'a' :  '8',  'b' : '6', 'c' : '3', 'odgovor' : 'a'},
-        {'vprasanje' : 'Kateri od naštetih smučarskih skakalcev ni nikoli dobil ocene za slog 5-krat 20?',
-         'a' : 'Peter Prevc', 'b' : 'Jurij Tepeš', 'c' : 'Primož Peterka', 'odgovor' : 'c'},
-        {'vprasanje' : 'Kljub temu da je bil Leon Štukelj izjemen gimnastik, pa je tudi dokončal študij:',
-        'a' : 'Fizike', 'b' : 'Prava', 'c' : 'Medicine', 'odgovor' : 'b'}
-        ]
+with open('Kosarka.txt', 'w') as d:
+    d.write('Največkrat (petkrat) so svetovni prvaki v košarki postali reprezentanci ZDA in: ;Španija;Sovjetska zveza;Jugoslavija;c\n')
+    d.write('Na olimpijskih igrah leta 1992 so ameriško reprezentanco poimenovali kar:;Fantasy team; Dream team; All star team;b\n')
+    d.write('Kobe Bryant je bil na naboru za ligo NBA leta 1996 izbran kot; 13; 4; 20;a')
 
-def izvedi(sez, k=0):
-    while k < 3:
-        slovar = sez[k]
-        print(slovar.get('vprasanje'))
-        print('a)' + slovar.get('a'))
-        print('b)' + slovar.get('b'))
-        print('c)' + slovar.get('c'))
+with open('Slo_sport.txt', 'w') as d:
+    d.write('Koliko medalj je Slovenija osvojila na olimpijskih igrah v Sočiju leta 2014?; 8; 6; 3;a\n')
+    d.write('Kateri od naštetih smučarskih skakalcev ni nikoli dobil ocene za slog 5-krat 20?; Peter Prevc; Jurij Tepeš; Primož Peterka;c\n')
+    d.write('Kljub temu da je bil Leon Štukelj izjemen gimnastik, pa je tudi dokončal študij:; Fizike; Prava; Medicine;b')
+
+
+def izvedi(datoteka, k=0):
+    seznam  = []
+    with open(datoteka, 'r') as f:
+        for vrstica in f:
+            seznam.append(vrstica.strip().split(';'))
+    for vpr in seznam:
+        print(vpr[0])
+        print('a)' + vpr[1])
+        print('b)' + vpr[2])
+        print('c)' + vpr[3])
         odg = input('Odgovor je: ')
-        if odg not in 'abc':
-            odg = print('Odgovorite lahko le tako, da vnesete a, b ali c!')
-            izvedi(sez, k)
-            break #Preprečimo da bi se ta funkcija dokončala
-        preveri(slovar, odg)
-        k += 1
+        while odg not in 'abc':
+            odg = input('Odgovorite lahko le tako, da vnesete a, b ali c! Odgovor je: ')
+        preveri(vpr, odg)
+    konec(kviz)
+
 
 def tema(self):
     self.izbor = input('Izberite temo, vnesite 1, 2 ali 3: \n 1) Nogomet \n 2) Košarka \n 3) Slovenski šport \n Tema: ')
     if self.izbor == '1':
-        izvedi(Nogomet)
+        izvedi('Nogomet.txt')
     elif self.izbor == '2':
-        izvedi(Kosarka)
+         izvedi('Kosarka.txt')
     elif self.izbor == '3':
-        izvedi(Slo_sport)
+        izvedi('Slo_sport.txt')
     else:
         print('Temo lahko izberete le tako, da vnesete 1, 2 ali 3: ')
         tema(self)
 
-def preveri(slovar, odg):
-    pravilen_odgovor = slovar.get('odgovor')
+
+def preveri(sez, odg):
+    pravilen_odgovor = sez[4]
     if odg == pravilen_odgovor:
         kviz.pravilnih += 1
         print('Odgovor je pravilen!')
     else:
         print('Odgovor ni pravilen, pravilen odgovor je {}.'.format(pravilen_odgovor) )
+
         
 def konec(self):
     print('Prišli ste do konca {}, pravilno ste odgovorili na {} vprašanj od treh.'.format(self.ime, self.pravilnih))
     znova = input('Če bi želeli igrati še enkrat (morda izbrati drugo temo) vtipkaje OK, sicer ste zaključili: ')
-    if znova == 'OK':
+    if znova in ['OK', 'ok', 'Ok']:
         tema(kviz)
         konec(kviz)
         
@@ -84,7 +77,7 @@ def konec(self):
 
 kviz = Kviz()
 tema(kviz)
-konec(kviz)
+
 
 
     
